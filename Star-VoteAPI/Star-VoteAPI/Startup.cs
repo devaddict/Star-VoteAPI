@@ -6,10 +6,13 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Star_VoteAPI.Models;
+using Star_VoteAPI.Models.DataManager;
 
 namespace Star_VoteAPI
 {
@@ -25,8 +28,17 @@ namespace Star_VoteAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<DBContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:ShowsDB"]));
+            services.AddScoped<IDataRepository<ShowModel>, ShowManager>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-        }
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowMyOrigin",
+                builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+            });
+        
+
+    }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -39,7 +51,7 @@ namespace Star_VoteAPI
             {
                 app.UseHsts();
             }
-
+            app.UseCors("AllowMyOrigin");
             app.UseHttpsRedirection();
             app.UseMvc();
         }

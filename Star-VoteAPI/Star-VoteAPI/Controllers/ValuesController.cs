@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +15,13 @@ namespace Star_VoteAPI.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
         {
+            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
+            builder.DataSource = "starvoterdbserver.database.windows.net";
+            builder.UserID = "devaddict";
+            builder.Password = "Letmefly1";
+            builder.InitialCatalog = "shows";
+
+            //Server = tcp:starvoterdbserver.database.windows.net,1433; Initial Catalog = shows; Persist Security Info = False; User ID = { your_username }; Password ={ your_password}; MultipleActiveResultSets = False; Encrypt = True; TrustServerCertificate = False; Connection Timeout = 30;
             return new string[] { "value1", "value2" };
         }
 
